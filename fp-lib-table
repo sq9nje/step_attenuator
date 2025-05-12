@@ -1,0 +1,5 @@
+(fp_lib_table
+  (version 7)
+  (lib (name "wt01-eth")(type "KiCad")(uri "${KIPRJMOD}/lib/WT32-ETH01.pretty")(options "")(descr ""))
+  (lib (name "qs_logo")(type "KiCad")(uri "${KIPRJMOD}/lib/qs_logo.pretty")(options "")(descr ""))
+)
