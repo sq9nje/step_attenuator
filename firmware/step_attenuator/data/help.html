@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Help - Digital Attenuator</title>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .help-nav {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--card-shadow);
+        }
+        
+        .help-nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 0.5rem;
+        }
+        
+        .help-nav li {
+            margin: 0;
+        }
+        
+        .help-nav a {
+            color: var(--primary-color);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            display: block;
+            transition: background-color 0.2s;
+        }
+        
+        .help-nav a:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .help-section {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--card-shadow);
+        }
+        
+        .help-section h2 {
+            color: var(--primary-color);
+            margin-top: 0;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+        
+        .help-section h3 {
+            color: var(--text-color);
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            font-size: 1.2rem;
+        }
+        
+        .command-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            background: var(--bg-color);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .command-table th,
+        .command-table td {
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .command-table th {
+            background: var(--primary-color);
+            color: white;
+            font-weight: 600;
+        }
+        
+        .command-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .command-table tr:nth-child(even) {
+            background: var(--card-bg);
+        }
+        
+        .command-code {
+            font-family: 'Courier New', monospace;
+            background: var(--card-bg);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            color: var(--primary-color);
+        }
+        
+        .example-box {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+        
+        .example-title {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            color: var(--primary-color);
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .spec-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .spec-item {
+            background: var(--bg-color);
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+        
+        .spec-label {
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 0.25rem;
+        }
+        
+        .spec-value {
+            color: var(--text-color);
+        }
+        
+        .back-button {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            background: var(--primary-color);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            box-shadow: var(--card-shadow);
+            transition: transform 0.2s;
+        }
+        
+        .back-button:hover {
+            transform: translateY(-2px);
+            color: white;
+        }
+        
+        @media (max-width: 768px) {
+            .back-button {
+                position: static;
+                display: block;
+                text-align: center;
+                margin-bottom: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class='container'>
+        <a href='/' class='back-button'>← Back to Control</a>
+        
+        <div class='header'>
+            <h1>Digital Attenuator - Help & Documentation</h1>
+            <p>Complete guide to features and SCPI commands</p>
+        </div>
+        
+        <div class='main-content'>
+            <!-- Quick Navigation -->
+            <nav class='help-nav'>
+                <h3 style='margin-top: 0; margin-bottom: 1rem;'>Quick Navigation</h3>
+                <ul>
+                    <li><a href='#overview'>Device Overview</a></li>
+                    <li><a href='#web-interface'>Web Interface</a></li>
+                    <li><a href='#scpi-commands'>SCPI Commands</a></li>
+                    <li><a href='#network-interfaces'>Network Interfaces</a></li>
+                    <li><a href='#examples'>Usage Examples</a></li>
+                    <li><a href='#troubleshooting'>Troubleshooting</a></li>
+                </ul>
+            </nav>
+            
+            <!-- Device Overview -->
+            <section class='help-section' id='overview'>
+                <h2>Device Overview</h2>
+                <p>The Digital Attenuator is a programmable RF attenuator designed for test and measurement applications. It provides precise attenuation control from 0 to 127 dB in 1 dB steps.</p>
+                
+                <h3>Technical Specifications</h3>
+                <div class='spec-grid'>
+                    <div class='spec-item'>
+                        <div class='spec-label'>Attenuation Range</div>
+                        <div class='spec-value'>0 - 127 dB</div>
+                    </div>
+                    <div class='spec-item'>
+                        <div class='spec-label'>Step Size</div>
+                        <div class='spec-value'>1 dB</div>
+                    </div>
+                    <div class='spec-item'>
+                        <div class='spec-label'>Control Interfaces</div>
+                        <div class='spec-value'>Web, SCPI, Telnet, Rotary Encoder</div>
+                    </div>
+                    <div class='spec-item'>
+                        <div class='spec-label'>Network Connectivity</div>
+                        <div class='spec-value'>WiFi 802.11 b/g/n</div>
+                    </div>
+                    <div class='spec-item'>
+                        <div class='spec-label'>Display</div>
+                        <div class='spec-value'>OLED with real-time value</div>
+                    </div>
+                    <div class='spec-item'>
+                        <div class='spec-label'>Manufacturer</div>
+                        <div class='spec-value'>Quirky Solutions by SQ9NJE</div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Web Interface -->
+            <section class='help-section' id='web-interface'>
+                <h2>Web Interface Features</h2>
+                
+                <h3>Main Controls</h3>
+                <ul>
+                    <li><strong>Current Value Display:</strong> Shows the current attenuation value in real-time</li>
+                    <li><strong>Quick Presets:</strong> Buttons for common values (0, 10, 20, 30, 40, 50, 60, 80 dB)</li>
+                    <li><strong>Fine Control:</strong> +1/-1 dB adjustment buttons</li>
+                    <li><strong>Custom Value:</strong> Direct input field for any value from 0-127 dB</li>
+                </ul>
+                
+                <h3>Keyboard Shortcuts</h3>
+                <ul>
+                    <li><strong>Ctrl + ↑:</strong> Increase attenuation by 1 dB</li>
+                    <li><strong>Ctrl + ↓:</strong> Decrease attenuation by 1 dB</li>
+                    <li><strong>Ctrl + 0:</strong> Reset to 0 dB attenuation</li>
+                </ul>
+                
+                <h3>Status Information</h3>
+                <ul>
+                    <li><strong>Connection Status:</strong> WiFi connection state</li>
+                    <li><strong>Network:</strong> Connected SSID</li>
+                    <li><strong>IP Address:</strong> Current device IP</li>
+                    <li><strong>Last Update:</strong> Timestamp of last status refresh</li>
+                </ul>
+                
+                <h3>System Configuration</h3>
+                <ul>
+                    <li><strong>WiFi Reset:</strong> Reset network settings and restart in AP mode</li>
+                    <li><strong>Access Point Mode:</strong> SSID "StepAttenuator", Password "configure"</li>
+                </ul>
+            </section>
+            
+            <!-- SCPI Commands -->
+            <section class='help-section' id='scpi-commands'>
+                <h2>SCPI Command Reference</h2>
+                <p>The device implements SCPI (Standard Commands for Programmable Instruments) for remote control. All commands are case-insensitive and support standard SCPI abbreviations.</p>
+                
+                <h3>IEEE 488.2 Mandatory Commands</h3>
+                <table class='command-table'>
+                    <thead>
+                        <tr>
+                            <th>Command</th>
+                            <th>Description</th>
+                            <th>Response</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class='command-code'>*IDN?</span></td>
+                            <td>Identification query</td>
+                            <td>SQ9NJE,Digital-Attenuator,0-127dB,v1.0</td>
+                        </tr>
+                        <tr>
+                            <td><span class='command-code'>*RST</span></td>
+                            <td>Reset device to default state</td>
+                            <td>Sets attenuation to 0 dB</td>
+                        </tr>
+                        <tr>
+                            <td><span class='command-code'>*TST?</span></td>
+                            <td>Self-test query</td>
+                            <td>0 (pass) or non-zero (fail)</td>
+                        </tr>
+                        <tr>
+                            <td><span class='command-code'>*OPC</span></td>
+                            <td>Operation complete</td>
+                            <td>Sets operation complete flag</td>
+                        </tr>
+                        <tr>
+                            <td><span class='command-code'>*OPC?</span></td>
+                            <td>Operation complete query</td>
+                            <td>1 (complete) or 0 (in progress)</td>
+                        </tr>
+                        <tr>
+                            <td><span class='command-code'>*CLS</span></td>
+                            <td>Clear status</td>
+                            <td>Clears error queue and status</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <h3>System Commands</h3>
+                <table class='command-table'>
+                    <thead>
+                        <tr>
+                            <th>Command</th>
+                            <th>Description</th>
+                            <th>Response</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class='command-code'>SYSTem:ERRor?</span></td>
+                            <td>Read error from queue</td>
+                            <td>Error code and message</td>
+                        </tr>
+                        <tr>
+                            <td><span class='command-code'>SYSTem:VERSion?</span></td>
+                            <td>SCPI version query</td>
+                            <td>1999.0</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <h3>Attenuation Control Commands</h3>
+                <table class='command-table'>
+                    <thead>
+                        <tr>
+                            <th>Command</th>
+                            <th>Description</th>
+                            <th>Parameters</th>
+                            <th>Response</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class='command-code'>ATTenuator:VALue</span></td>
+                            <td>Set attenuation value</td>
+                            <td>0.0 to 127.0 (dB)</td>
+                            <td>None</td>
+                        </tr>
+                        <tr>
+                            <td><span class='command-code'>ATTenuator:VALue?</span></td>
+                            <td>Query current attenuation</td>
+                            <td>None</td>
+                            <td>Current value in dB</td>
+                        </tr>
+                        <tr>
+                            <td><span class='command-code'>ATTenuator:INCrement</span></td>
+                            <td>Increase by 1 dB</td>
+                            <td>None</td>
+                            <td>None</td>
+                        </tr>
+                        <tr>
+                            <td><span class='command-code'>ATTenuator:DECrement</span></td>
+                            <td>Decrease by 1 dB</td>
+                            <td>None</td>
+                            <td>None</td>
+                        </tr>
+                        <tr>
+                            <td><span class='command-code'>ATTenuator:VALue:MINimum?</span></td>
+                            <td>Query minimum value</td>
+                            <td>None</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td><span class='command-code'>ATTenuator:VALue:MAXimum?</span></td>
+                            <td>Query maximum value</td>
+                            <td>None</td>
+                            <td>127</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <h3>Command Abbreviations</h3>
+                <p>SCPI supports standard abbreviations. Capital letters show the minimum abbreviation:</p>
+                <ul>
+                    <li><span class='command-code'>ATTenuator</span> can be abbreviated as <span class='command-code'>ATT</span></li>
+                    <li><span class='command-code'>VALue</span> can be abbreviated as <span class='command-code'>VAL</span></li>
+                    <li><span class='command-code'>INCrement</span> can be abbreviated as <span class='command-code'>INC</span></li>
+                    <li><span class='command-code'>DECrement</span> can be abbreviated as <span class='command-code'>DEC</span></li>
+                    <li><span class='command-code'>MINimum</span> can be abbreviated as <span class='command-code'>MIN</span></li>
+                    <li><span class='command-code'>MAXimum</span> can be abbreviated as <span class='command-code'>MAX</span></li>
+                </ul>
+            </section>
+            
+            <!-- Network Interfaces -->
+            <section class='help-section' id='network-interfaces'>
+                <h2>Network Interfaces</h2>
+                
+                <h3>Available Ports</h3>
+                <div class='spec-grid'>
+                    <div class='spec-item'>
+                        <div class='spec-label'>SCPI over TCP</div>
+                        <div class='spec-value'>Port 5025</div>
+                    </div>
+                    <div class='spec-item'>
+                        <div class='spec-label'>Telnet Access</div>
+                        <div class='spec-value'>Port 23</div>
+                    </div>
+                    <div class='spec-item'>
+                        <div class='spec-label'>Web Interface</div>
+                        <div class='spec-value'>Port 80</div>
+                    </div>
+                    <div class='spec-item'>
+                        <div class='spec-label'>JSON API</div>
+                        <div class='spec-value'>GET /status</div>
+                    </div>
+                </div>
+                
+                <h3>Connection Methods</h3>
+                <ul>
+                    <li><strong>SCPI TCP (Port 5025):</strong> Primary interface for automated test equipment</li>
+                    <li><strong>Telnet (Port 23):</strong> Interactive command-line access for manual control</li>
+                    <li><strong>Web Interface (Port 80):</strong> Browser-based control panel</li>
+                    <li><strong>JSON API:</strong> RESTful interface for status queries</li>
+                </ul>
+                
+                <h3>Concurrent Connections</h3>
+                <p>The device supports up to 4 simultaneous TCP connections, allowing multiple clients to connect concurrently.</p>
+            </section>
+            
+            <!-- Usage Examples -->
+            <section class='help-section' id='examples'>
+                <h2>Usage Examples</h2>
+                
+                <h3>Basic SCPI Commands</h3>
+                <div class='example-box'>
+                    <div class='example-title'>Set attenuation to 20 dB:</div>
+                    ATT:VAL 20<br>
+                    <br>
+                    <div class='example-title'>Query current attenuation:</div>
+                    ATT:VAL?<br>
+                    Response: 20<br>
+                    <br>
+                    <div class='example-title'>Increase by 1 dB:</div>
+                    ATT:INC<br>
+                    <br>
+                    <div class='example-title'>Reset to 0 dB:</div>
+                    *RST
+                </div>
+                
+                <h3>Telnet Session Example</h3>
+                <div class='example-box'>
+                    <div class='example-title'>Connect via telnet:</div>
+                    $ telnet 192.168.1.100 23<br>
+                    Connected to 192.168.1.100<br>
+                    <br>
+                    > *IDN?<br>
+                    SQ9NJE,Digital-Attenuator,0-127dB,v1.0<br>
+                    <br>
+                    > ATT:VAL 30<br>
+                    > ATT:VAL?<br>
+                    30<br>
+                    <br>
+                    > ATT:MAX?<br>
+                    127
+                </div>
+                
+                <h3>Python Script Example</h3>
+                <div class='example-box'>
+                    <div class='example-title'>Python automation example:</div>
+                    import socket<br>
+                    <br>
+                    def send_scpi(ip, command):<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;sock.connect((ip, 5025))<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;sock.send(f"{command}\n".encode())<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;if command.endswith('?'):<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;response = sock.recv(1024).decode().strip()<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sock.close()<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return response<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;sock.close()<br>
+                    <br>
+                    # Set attenuation to 25 dB<br>
+                    send_scpi("192.168.1.100", "ATT:VAL 25")<br>
+                    <br>
+                    # Read current value<br>
+                    value = send_scpi("192.168.1.100", "ATT:VAL?")<br>
+                    print(f"Current attenuation: {value} dB")
+                </div>
+                
+                <h3>JSON API Example</h3>
+                <div class='example-box'>
+                    <div class='example-title'>Get device status via HTTP:</div>
+                    GET http://192.168.1.100/status<br>
+                    <br>
+                    <div class='example-title'>Response:</div>
+                    {<br>
+                    &nbsp;&nbsp;"attenuation": 25,<br>
+                    &nbsp;&nbsp;"wifi_connected": true,<br>
+                    &nbsp;&nbsp;"wifi_ssid": "MyNetwork",<br>
+                    &nbsp;&nbsp;"ip_address": "192.168.1.100"<br>
+                    }
+                </div>
+            </section>
+            
+            <!-- Troubleshooting -->
+            <section class='help-section' id='troubleshooting'>
+                <h2>Troubleshooting</h2>
+                
+                <h3>Connection Issues</h3>
+                <ul>
+                    <li><strong>Cannot connect to web interface:</strong>
+                        <ul>
+                            <li>Check device IP address on OLED display</li>
+                            <li>Ensure device and computer are on same network</li>
+                            <li>Try accessing via IP address instead of hostname</li>
+                        </ul>
+                    </li>
+                    <li><strong>WiFi connection failed:</strong>
+                        <ul>
+                            <li>Reset WiFi settings using the web interface</li>
+                            <li>Device will create "StepAttenuator" access point</li>
+                            <li>Connect to AP and reconfigure network settings</li>
+                        </ul>
+                    </li>
+                </ul>
+                
+                <h3>SCPI Command Issues</h3>
+                <ul>
+                    <li><strong>Command not recognized:</strong>
+                        <ul>
+                            <li>Check command syntax and abbreviations</li>
+                            <li>Ensure proper termination (line feed or carriage return)</li>
+                            <li>Commands are case-insensitive</li>
+                        </ul>
+                    </li>
+                    <li><strong>Parameter out of range:</strong>
+                        <ul>
+                            <li>Attenuation range is 0-127 dB</li>
+                            <li>Use SYST:ERR? to read error details</li>
+                        </ul>
+                    </li>
+                </ul>
+                
+                <h3>Error Codes</h3>
+                <table class='command-table'>
+                    <thead>
+                        <tr>
+                            <th>Code</th>
+                            <th>Description</th>
+                            <th>Solution</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>-109</td>
+                            <td>Missing parameter</td>
+                            <td>Provide required parameter value</td>
+                        </tr>
+                        <tr>
+                            <td>-224</td>
+                            <td>Illegal parameter value</td>
+                            <td>Check parameter range (0-127 dB)</td>
+                        </tr>
+                        <tr>
+                            <td>0</td>
+                            <td>No error</td>
+                            <td>Normal operation</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <h3>Factory Reset</h3>
+                <p>To perform a complete factory reset:</p>
+                <ol>
+                    <li>Use the "Reset WiFi Configuration" button in the web interface</li>
+                    <li>Device will restart and create access point "StepAttenuator"</li>
+                    <li>Connect to the access point (password: "configure")</li>
+                    <li>Navigate to 192.168.4.1 to reconfigure network settings</li>
+                </ol>
+            </section>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Digital Attenuator</title>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script>
+        let isUpdating = false;
+        let lastAttenuation = null;
+        
+        function updateStatus() {
+            if (isUpdating) return;
+            isUpdating = true;
+            
+            fetch('/status')
+                .then(response => response.json())
+                .then(data => {
+                    // Update main value with animation
+                    const valueElement = document.getElementById('current-att');
+                    if (valueElement) {
+                        if (lastAttenuation !== data.attenuation) {
+                            valueElement.style.transform = 'scale(1.1)';
+                            setTimeout(() => {
+                                valueElement.style.transform = 'scale(1)';
+                            }, 200);
+                            lastAttenuation = data.attenuation;
+                        }
+                        valueElement.textContent = data.attenuation;
+                    }
+                    
+                    // Update status indicators with null checks
+                    const wifiStatus = data.wifi_connected;
+                    const wifiStatusElement = document.getElementById('wifi-status');
+                    
+                    if (wifiStatusElement) {
+                        // Clear and rebuild the wifi status element content
+                        wifiStatusElement.innerHTML = '';
+                        
+                        // Create and add the indicator span
+                        const indicatorSpan = document.createElement('span');
+                        indicatorSpan.className = 'status-indicator ' + (wifiStatus ? 'indicator-online' : 'indicator-offline');
+                        indicatorSpan.id = 'wifi-indicator';
+                        wifiStatusElement.appendChild(indicatorSpan);
+                        
+                        // Add the status text
+                        const statusText = document.createTextNode(wifiStatus ? 'Connected' : 'Disconnected');
+                        wifiStatusElement.appendChild(statusText);
+                        
+                        // Set the overall class
+                        wifiStatusElement.className = 'status-value ' + (wifiStatus ? 'status-online' : 'status-offline');
+                    }
+                    
+                    const wifiSsidElement = document.getElementById('wifi-ssid');
+                    if (wifiSsidElement) {
+                        wifiSsidElement.textContent = data.wifi_ssid || 'Not connected';
+                    }
+                    
+                    const ipAddressElement = document.getElementById('ip-address');
+                    if (ipAddressElement) {
+                        ipAddressElement.textContent = data.ip_address || 'N/A';
+                    }
+                    
+                    const lastUpdateElement = document.getElementById('last-update');
+                    if (lastUpdateElement) {
+                        lastUpdateElement.textContent = new Date().toLocaleTimeString();
+                    }
+                    
+                    // Remove any error styling
+                    document.body.classList.remove('loading');
+                })
+                .catch(error => {
+                    console.error('Error updating status:', error);
+                    const lastUpdateElement = document.getElementById('last-update');
+                    if (lastUpdateElement) {
+                        lastUpdateElement.textContent = 'Error: ' + new Date().toLocaleTimeString();
+                    }
+                    document.body.classList.add('loading');
+                })
+                .finally(() => {
+                    isUpdating = false;
+                });
+        }
+        
+        function setAttenuation(value) {
+            // Visual feedback
+            document.body.classList.add('loading');
+            
+            fetch('/control', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'attenuation=' + value
+            })
+            .then(() => {
+                // Quick update after setting
+                setTimeout(updateStatus, 100);
+            })
+            .catch(error => {
+                console.error('Error setting attenuation:', error);
+                document.body.classList.remove('loading');
+            });
+        }
+        
+        function adjustAttenuation(action) {
+            document.body.classList.add('loading');
+            
+            fetch('/control', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'action=' + action
+            })
+            .then(() => {
+                setTimeout(updateStatus, 100);
+            })
+            .catch(error => {
+                console.error('Error adjusting attenuation:', error);
+                document.body.classList.remove('loading');
+            });
+        }
+        
+        function handleCustomSet(event) {
+            event.preventDefault();
+            const input = event.target.querySelector('input[name="attenuation"]');
+            const value = parseInt(input.value);
+            
+            if (value >= 0 && value <= 127) {
+                setAttenuation(value);
+            } else {
+                alert('Please enter a value between 0 and 127 dB');
+            }
+        }
+        
+        function toggleCollapsible(event, id) {
+            const element = document.getElementById(id);
+            if (!element) return;
+            
+            const header = event.target.closest('.collapsible-header');
+            if (!header) return;
+            
+            const icon = header.querySelector('.collapse-icon');
+            if (!icon) return;
+            
+            if (element.classList.contains('collapsed')) {
+                element.classList.remove('collapsed');
+                icon.textContent = 'v';
+            } else {
+                element.classList.add('collapsed');
+                icon.textContent = '>';
+            }
+        }
+        
+        // Wait for DOM to be fully loaded before starting
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initial load
+            updateStatus();
+            
+            // Auto-refresh status every 2 seconds for more responsive updates
+            setInterval(updateStatus, 2000);
+        });
+        
+        // Fallback for older browsers
+        window.onload = function() {
+            updateStatus();
+        };
+        
+        // Handle keyboard shortcuts
+        document.addEventListener('keydown', function(event) {
+            if (event.ctrlKey || event.metaKey) {
+                switch(event.key) {
+                    case '0':
+                        event.preventDefault();
+                        setAttenuation(0);
+                        break;
+                    case 'ArrowUp':
+                        event.preventDefault();
+                        adjustAttenuation('increment');
+                        break;
+                    case 'ArrowDown':
+                        event.preventDefault();
+                        adjustAttenuation('decrement');
+                        break;
+                }
+            }
+        });
+    </script>
+</head>
+<body>
+    <div class='container'>
+        <div class='header'>
+            <h1>Programmable Attenuator</h1>
+            <p>Quirky Solutions by SQ9NJE</p>
+            <div style='text-align: center; margin-top: 1rem;'>
+                <a href='/help.html' class='btn btn-secondary' style='text-decoration: none;'>📚 Help & Documentation</a>
+            </div>
+        </div>
+        
+        <div class='main-content'>
+            <!-- Current Value Display -->
+            <div class='current-value'>
+                <div class='value-display' id='current-att'>--</div>
+                <div class='value-unit'>dB Attenuation</div>
+            </div>
+            
+            <!-- Manual Control - Moved directly below current value -->
+            <div class='control-section'>
+                <h2 class='section-title'>Quick Presets</h2>
+                <div class='preset-grid'>
+                    <button class='btn btn-secondary' onclick='setAttenuation(0)'>0 dB</button>
+                    <button class='btn btn-secondary' onclick='setAttenuation(10)'>10 dB</button>
+                    <button class='btn btn-secondary' onclick='setAttenuation(20)'>20 dB</button>
+                    <button class='btn btn-secondary' onclick='setAttenuation(30)'>30 dB</button>
+                    <button class='btn btn-secondary' onclick='setAttenuation(40)'>40 dB</button>
+                    <button class='btn btn-secondary' onclick='setAttenuation(50)'>50 dB</button>
+                    <button class='btn btn-secondary' onclick='setAttenuation(60)'>60 dB</button>
+                    <button class='btn btn-secondary' onclick='setAttenuation(80)'>80 dB</button>
+                </div>
+                
+                <h3 class='section-title' style='font-size: 1.2rem; margin-top: 2rem;'>Fine Control</h3>
+                <div class='control-group'>
+                    <button class='btn btn-primary' onclick='adjustAttenuation("decrement")'>-1 dB</button>
+                    <button class='btn btn-primary' onclick='adjustAttenuation("increment")'>+1 dB</button>
+                </div>
+                
+                <h3 class='section-title' style='font-size: 1.2rem;'>Custom Value</h3>
+                <form onsubmit='handleCustomSet(event)' class='input-group'>
+                    <input type='number' name='attenuation' min='0' max='127' step='1' 
+                           class='input-field' placeholder='0-127'>
+                    <button type='submit' class='btn btn-primary'>Set Value</button>
+                </form>
+            </div>
+            
+            <!-- Status Section - Made Collapsible -->
+            <div class='collapsible-section'>
+                <h3 class='collapsible-header' onclick='toggleCollapsible(event, "status-content")'>
+                    <span class='collapse-icon'>v</span>Status
+                </h3>
+                <div class='collapsible-content' id='status-content'>
+                    <div class='status-grid'>
+                        <div class='status-card'>
+                            <div class='status-label'>Connection Status</div>
+                            <div class='status-value' id='wifi-status'>
+                                <span class='status-indicator' id='wifi-indicator'></span>
+                                --
+                            </div>
+                        </div>
+                        <div class='status-card'>
+                            <div class='status-label'>Network</div>
+                            <div class='status-value' id='wifi-ssid'>--</div>
+                        </div>
+                        <div class='status-card'>
+                            <div class='status-label'>IP Address</div>
+                            <div class='status-value' id='ip-address'>--</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Network Interfaces - Made Collapsible -->
+            <div class='collapsible-section'>
+                <h3 class='collapsible-header' onclick='toggleCollapsible(event, "network-content")'>
+                    <span class='collapse-icon'>v</span>Network Interfaces
+                </h3>
+                <div class='collapsible-content' id='network-content'>
+                    <div class='info-grid'>
+                        <div class='info-item'>
+                            <div class='status-label'>SCPI over TCP</div>
+                            <div class='status-value'>Port 5025</div>
+                        </div>
+                        <div class='info-item'>
+                            <div class='status-label'>Telnet Access</div>
+                            <div class='status-value'>Port 23</div>
+                        </div>
+                        <div class='info-item'>
+                            <div class='status-label'>Web Interface</div>
+                            <div class='status-value'>Port 80</div>
+                        </div>
+                        <div class='info-item'>
+                            <div class='status-label'>JSON API</div>
+                            <div class='status-value'><a href='/status' target='_blank'>/status</a></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- System Configuration - Made Collapsible -->
+            <div class='collapsible-section'>
+                <h3 class='collapsible-header' onclick='toggleCollapsible(event, "system-content")'>
+                    <span class='collapse-icon'>v</span>System Configuration
+                </h3>
+                <div class='collapsible-content' id='system-content'>
+                    <div style='text-align: center; padding: 1rem;'>
+                        <form action='/reset' method='post' style='display: inline;'>
+                            <button type='submit' class='btn btn-danger' 
+                                    onclick='return confirm("Reset WiFi settings and restart device?")'>
+                                Reset WiFi Configuration
+                            </button>
+                        </form>
+                        <p style='font-size: 0.9em; color: var(--text-muted); margin-top: 1rem;'>
+                            Device will restart and create access point "StepAttenuator" for reconfiguration.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class='last-update'>
+                Last update: <span id='last-update'>--</span> | 
+                Use Ctrl+UP/DOWN for quick increment/decrement | 
+                Ctrl+0 for reset to 0 dB
+            </div>
+        </div>
+    </div>
+</body>
+</html>
