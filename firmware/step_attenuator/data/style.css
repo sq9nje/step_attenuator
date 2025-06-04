@@ -13,6 +13,14 @@
     --border: #e2e8f0;
     --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    
+    /* Additional CSS variables for help page compatibility */
+    --primary-color: var(--primary);
+    --bg-color: var(--background);
+    --card-bg: var(--surface);
+    --text-color: var(--text-primary);
+    --border-color: var(--border);
+    --card-shadow: var(--shadow);
 }
 
 * {
@@ -398,6 +406,165 @@ body {
     opacity: 0;
 }
 
+/* Help Page Styles */
+.help-nav {
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    box-shadow: var(--card-shadow);
+}
+
+.help-nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0.5rem;
+}
+
+.help-nav li {
+    margin: 0;
+}
+
+.help-nav a {
+    color: var(--primary-color);
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    display: block;
+    transition: background-color 0.2s;
+}
+
+.help-nav a:hover {
+    background: var(--primary-color);
+    color: white;
+}
+
+.help-section {
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: var(--card-shadow);
+}
+
+.help-section h2 {
+    color: var(--primary-color);
+    margin-top: 0;
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: 0.5rem;
+}
+
+.help-section h3 {
+    color: var(--text-color);
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    font-size: 1.2rem;
+}
+
+.command-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+    background: var(--bg-color);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.command-table th,
+.command-table td {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.command-table th {
+    background: var(--primary-color);
+    color: white;
+    font-weight: 600;
+}
+
+.command-table tr:last-child td {
+    border-bottom: none;
+}
+
+.command-table tr:nth-child(even) {
+    background: var(--card-bg);
+}
+
+.command-code {
+    font-family: 'Courier New', monospace;
+    background: var(--card-bg);
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    color: var(--primary-color);
+}
+
+.example-box {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1rem;
+    margin: 1rem 0;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+}
+
+.example-title {
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    color: var(--primary-color);
+    font-family: 'Inter', sans-serif;
+}
+
+.spec-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+    margin: 1rem 0;
+}
+
+.spec-item {
+    background: var(--bg-color);
+    padding: 1rem;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
+
+.spec-label {
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-bottom: 0.25rem;
+}
+
+.spec-value {
+    color: var(--text-color);
+}
+
+.back-button {
+    position: fixed;
+    top: 2rem;
+    right: 2rem;
+    background: var(--primary-color);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 500;
+    box-shadow: var(--card-shadow);
+    transition: transform 0.2s;
+}
+
+.back-button:hover {
+    transform: translateY(-2px);
+    color: white;
+}
+
 @media (max-width: 768px) {
     .container {
         margin: 0.5rem;
@@ -426,5 +593,12 @@ body {
     
     .control-group {
         flex-direction: column;
+    }
+    
+    .back-button {
+        position: static;
+        display: block;
+        text-align: center;
+        margin-bottom: 2rem;
     }
 }

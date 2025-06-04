@@ -8,174 +8,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-    <style>
-        .help-nav {
-            background: var(--card-bg);
-            border-radius: 12px;
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-            box-shadow: var(--card-shadow);
-        }
-        
-        .help-nav ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 0.5rem;
-        }
-        
-        .help-nav li {
-            margin: 0;
-        }
-        
-        .help-nav a {
-            color: var(--primary-color);
-            text-decoration: none;
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            display: block;
-            transition: background-color 0.2s;
-        }
-        
-        .help-nav a:hover {
-            background: var(--primary-color);
-            color: white;
-        }
-        
-        .help-section {
-            background: var(--card-bg);
-            border-radius: 12px;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            box-shadow: var(--card-shadow);
-        }
-        
-        .help-section h2 {
-            color: var(--primary-color);
-            margin-top: 0;
-            margin-bottom: 1rem;
-            font-size: 1.5rem;
-            border-bottom: 2px solid var(--border-color);
-            padding-bottom: 0.5rem;
-        }
-        
-        .help-section h3 {
-            color: var(--text-color);
-            margin-top: 1.5rem;
-            margin-bottom: 0.75rem;
-            font-size: 1.2rem;
-        }
-        
-        .command-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 1rem 0;
-            background: var(--bg-color);
-            border-radius: 8px;
-            overflow: hidden;
-        }
-        
-        .command-table th,
-        .command-table td {
-            padding: 0.75rem 1rem;
-            text-align: left;
-            border-bottom: 1px solid var(--border-color);
-        }
-        
-        .command-table th {
-            background: var(--primary-color);
-            color: white;
-            font-weight: 600;
-        }
-        
-        .command-table tr:last-child td {
-            border-bottom: none;
-        }
-        
-        .command-table tr:nth-child(even) {
-            background: var(--card-bg);
-        }
-        
-        .command-code {
-            font-family: 'Courier New', monospace;
-            background: var(--card-bg);
-            padding: 0.25rem 0.5rem;
-            border-radius: 4px;
-            font-size: 0.9rem;
-            color: var(--primary-color);
-        }
-        
-        .example-box {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 1rem;
-            margin: 1rem 0;
-            font-family: 'Courier New', monospace;
-            font-size: 0.9rem;
-        }
-        
-        .example-title {
-            font-weight: bold;
-            margin-bottom: 0.5rem;
-            color: var(--primary-color);
-            font-family: 'Inter', sans-serif;
-        }
-        
-        .spec-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1rem;
-            margin: 1rem 0;
-        }
-        
-        .spec-item {
-            background: var(--bg-color);
-            padding: 1rem;
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-        }
-        
-        .spec-label {
-            font-weight: 600;
-            color: var(--primary-color);
-            margin-bottom: 0.25rem;
-        }
-        
-        .spec-value {
-            color: var(--text-color);
-        }
-        
-        .back-button {
-            position: fixed;
-            top: 2rem;
-            right: 2rem;
-            background: var(--primary-color);
-            color: white;
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 500;
-            box-shadow: var(--card-shadow);
-            transition: transform 0.2s;
-        }
-        
-        .back-button:hover {
-            transform: translateY(-2px);
-            color: white;
-        }
-        
-        @media (max-width: 768px) {
-            .back-button {
-                position: static;
-                display: block;
-                text-align: center;
-                margin-bottom: 2rem;
-            }
-        }
-    </style>
 </head>
 <body>
     <div class='container'>
@@ -339,6 +171,56 @@
                     </tbody>
                 </table>
                 
+                <h3>Network/WiFi Commands</h3>
+                <table class='command-table'>
+                    <thead>
+                        <tr>
+                            <th>Command</th>
+                            <th>Description</th>
+                            <th>Parameters</th>
+                            <th>Response</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class='command-code'>SYSTem:NETwork:STATus?</span></td>
+                            <td>Query network connection status</td>
+                            <td>None</td>
+                            <td>CONNECTED, CONNECTING, DISCONNECTED, ACCESS_POINT, ERROR, UNKNOWN</td>
+                        </tr>
+                        <tr>
+                            <td><span class='command-code'>SYSTem:NETwork:IP?</span></td>
+                            <td>Query device IP address</td>
+                            <td>None</td>
+                            <td>IP address or 0.0.0.0 if not connected</td>
+                        </tr>
+                        <tr>
+                            <td><span class='command-code'>SYSTem:NETwork:SSID?</span></td>
+                            <td>Query connected network name</td>
+                            <td>None</td>
+                            <td>Network SSID or "Not Connected"</td>
+                        </tr>
+                        <tr>
+                            <td><span class='command-code'>SYSTem:NETwork:INFO?</span></td>
+                            <td>Query comprehensive network info</td>
+                            <td>None</td>
+                            <td>Connection details (semicolon separated)</td>
+                        </tr>
+                        <tr>
+                            <td><span class='command-code'>SYSTem:WIFI:RESet</span></td>
+                            <td>Reset WiFi settings and restart</td>
+                            <td>None</td>
+                            <td>Confirmation message</td>
+                        </tr>
+                        <tr>
+                            <td><span class='command-code'>SYSTem:WIFI:CONFigure</span></td>
+                            <td>Configure WiFi network</td>
+                            <td>[SSID] [PASSWORD] or none for AP mode</td>
+                            <td>Configuration status</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
                 <h3>Attenuation Control Commands</h3>
                 <table class='command-table'>
                     <thead>
@@ -392,6 +274,10 @@
                 <h3>Command Abbreviations</h3>
                 <p>SCPI supports standard abbreviations. Capital letters show the minimum abbreviation:</p>
                 <ul>
+                    <li><span class='command-code'>SYSTem</span> can be abbreviated as <span class='command-code'>SYST</span></li>
+                    <li><span class='command-code'>NETwork</span> can be abbreviated as <span class='command-code'>NETW</span></li>
+                    <li><span class='command-code'>STATus</span> can be abbreviated as <span class='command-code'>STAT</span></li>
+                    <li><span class='command-code'>CONFigure</span> can be abbreviated as <span class='command-code'>CONF</span></li>
                     <li><span class='command-code'>ATTenuator</span> can be abbreviated as <span class='command-code'>ATT</span></li>
                     <li><span class='command-code'>VALue</span> can be abbreviated as <span class='command-code'>VAL</span></li>
                     <li><span class='command-code'>INCrement</span> can be abbreviated as <span class='command-code'>INC</span></li>
@@ -457,6 +343,45 @@
                     *RST
                 </div>
                 
+                <h3>Network Status Commands</h3>
+                <div class='example-box'>
+                    <div class='example-title'>Check network connection status:</div>
+                    SYST:NETW:STAT?<br>
+                    Response: CONNECTED<br>
+                    <br>
+                    <div class='example-title'>Get device IP address:</div>
+                    SYST:NETW:IP?<br>
+                    Response: 192.168.1.100<br>
+                    <br>
+                    <div class='example-title'>Get connected network name:</div>
+                    SYST:NETW:SSID?<br>
+                    Response: MyHomeNetwork<br>
+                    <br>
+                    <div class='example-title'>Get complete network information:</div>
+                    SYST:NETW:INFO?<br>
+                    Response: WiFi Status: Connected;SSID: MyHomeNetwork;IP: 192.168.1.100
+                </div>
+                
+                <h3>WiFi Configuration Commands</h3>
+                <div class='example-box'>
+                    <div class='example-title'>Configure WiFi with credentials:</div>
+                    SYST:WIFI:CONF MyNetwork MyPassword<br>
+                    Response: Configuring WiFi...<br>
+                    WiFi configured successfully<br>
+                    IP: 192.168.1.100<br>
+                    <br>
+                    <div class='example-title'>Start configuration portal:</div>
+                    SYST:WIFI:CONF<br>
+                    Response: Starting WiFi configuration portal...<br>
+                    Connect to AP: StepAttenuator<br>
+                    Password: configure<br>
+                    Navigate to 192.168.4.1 to configure<br>
+                    <br>
+                    <div class='example-title'>Reset WiFi settings:</div>
+                    SYST:WIFI:RES<br>
+                    Response: WiFi settings will be reset. Device will restart.
+                </div>
+                
                 <h3>Telnet Session Example</h3>
                 <div class='example-box'>
                     <div class='example-title'>Connect via telnet:</div>
@@ -465,6 +390,9 @@
                     <br>
                     > *IDN?<br>
                     SQ9NJE,Digital-Attenuator,0-127dB,v1.0<br>
+                    <br>
+                    > SYST:NETW:STAT?<br>
+                    CONNECTED<br>
                     <br>
                     > ATT:VAL 30<br>
                     > ATT:VAL?<br>
@@ -488,6 +416,10 @@
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sock.close()<br>
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return response<br>
                     &nbsp;&nbsp;&nbsp;&nbsp;sock.close()<br>
+                    <br>
+                    # Check network status<br>
+                    status = send_scpi("192.168.1.100", "SYST:NETW:STAT?")<br>
+                    print(f"Network status: {status}")<br>
                     <br>
                     # Set attenuation to 25 dB<br>
                     send_scpi("192.168.1.100", "ATT:VAL 25")<br>
@@ -523,13 +455,15 @@
                             <li>Check device IP address on OLED display</li>
                             <li>Ensure device and computer are on same network</li>
                             <li>Try accessing via IP address instead of hostname</li>
+                            <li>Use <span class='command-code'>SYST:NETW:STAT?</span> to check connection status via SCPI</li>
                         </ul>
                     </li>
                     <li><strong>WiFi connection failed:</strong>
                         <ul>
-                            <li>Reset WiFi settings using the web interface</li>
+                            <li>Reset WiFi settings using the web interface or <span class='command-code'>SYST:WIFI:RES</span></li>
                             <li>Device will create "StepAttenuator" access point</li>
                             <li>Connect to AP and reconfigure network settings</li>
+                            <li>Use <span class='command-code'>SYST:WIFI:CONF SSID PASSWORD</span> for direct configuration</li>
                         </ul>
                     </li>
                 </ul>
@@ -547,6 +481,13 @@
                         <ul>
                             <li>Attenuation range is 0-127 dB</li>
                             <li>Use SYST:ERR? to read error details</li>
+                        </ul>
+                    </li>
+                    <li><strong>Network commands not working:</strong>
+                        <ul>
+                            <li>Ensure device firmware supports network commands</li>
+                            <li>Check WiFi connection status first with <span class='command-code'>SYST:NETW:STAT?</span></li>
+                            <li>WiFi configuration may take up to 30 seconds</li>
                         </ul>
                     </li>
                 </ul>
@@ -570,6 +511,11 @@
                             <td>-224</td>
                             <td>Illegal parameter value</td>
                             <td>Check parameter range (0-127 dB)</td>
+                        </tr>
+                        <tr>
+                            <td>-350</td>
+                            <td>Queue overflow</td>
+                            <td>WiFi connection failed or other system error</td>
                         </tr>
                         <tr>
                             <td>0</td>

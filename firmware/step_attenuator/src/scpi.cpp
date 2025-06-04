@@ -1,4 +1,5 @@
 #include "scpi.h"
+#include "wifi_manager.h"
 
 SCPI_Parser scpi_attenuator;
 
@@ -33,6 +34,15 @@ void setupSCPI() {
     scpi_attenuator.RegisterCommand(F("ATTenuator:VALue:MINimum?"), &queryAttenuationMin);
     scpi_attenuator.RegisterCommand(F("ATTenuator:VALue:MAXimum?"), &queryAttenuationMax);
 
+    // Register Network/WiFi Commands
+    scpi_attenuator.RegisterCommand(F("SYSTem:NETwork:STATus?"), &SystemNetworkStatus);
+    scpi_attenuator.RegisterCommand(F("SYSTem:NETwork:IP?"), &SystemNetworkIP);
+    scpi_attenuator.RegisterCommand(F("SYSTem:NETwork:SSID?"), &SystemNetworkSSID);
+    scpi_attenuator.RegisterCommand(F("SYSTem:NETwork:INFO?"), &SystemNetworkInfo);
+    scpi_attenuator.RegisterCommand(F("SYSTem:WIFI:RESet"), &SystemWiFiReset);
+    scpi_attenuator.RegisterCommand(F("SYSTem:WIFI:CONFigure"), &SystemWiFiConfigure);
+
+    scpi_attenuator.SetErrorHandler(&myErrorHandler);
 }
 
 void Identify(SCPI_C commands, SCPI_P parameters, Stream& interface) {
@@ -134,6 +144,51 @@ void SystemErrorQuery(SCPI_C commands, SCPI_P parameters, Stream& interface) {
     } else {
         interface.println(F("0,\"No error\""));
     }
+
+    switch(scpi_attenuator.last_error){
+    case SCPI_Parser::ErrorCode::BufferOverflow: 
+      interface.println(F("Buffer overflow error"));
+      break;
+    case SCPI_Parser::ErrorCode::Timeout:
+      interface.println(F("Communication timeout error"));
+      break;
+    case SCPI_Parser::ErrorCode::UnknownCommand:
+      interface.println(F("Unknown command received"));
+      break;
+    case SCPI_Parser::ErrorCode::NoError:
+      interface.println(F("No Error"));
+      break;
+  }
+  scpi_attenuator.last_error = SCPI_Parser::ErrorCode::NoError;
+}
+
+void myErrorHandler(SCPI_C commands, SCPI_P parameters, Stream& interface) {
+  //This function is called every time an error occurs
+
+  /* The error type is stored in my_instrument.last_error
+     Possible errors are:
+       SCPI_Parser::ErrorCode::NoError
+       SCPI_Parser::ErrorCode::UnknownCommand
+       SCPI_Parser::ErrorCode::Timeout
+       SCPI_Parser::ErrorCode::BufferOverflow
+  */
+
+  /* For BufferOverflow errors, the rest of the message, still in the interface
+  buffer or not yet received, will be processed later and probably 
+  trigger another kind of error.
+  Here we flush the incomming message*/
+  if (scpi_attenuator.last_error == SCPI_Parser::ErrorCode::BufferOverflow) {
+    delay(2);
+    while (interface.available()) {
+      delay(2);
+      interface.read();
+    }
+  }
+
+  /*
+  For UnknownCommand errors, you can get the received unknown command and
+  parameters from the commands and parameters variables.
+  */
 }
 
 void SystemVersionQuery(SCPI_C commands, SCPI_P parameters, Stream& interface) {
@@ -147,4 +202,116 @@ void queryAttenuationMin(SCPI_C commands, SCPI_P parameters, Stream& interface) 
 
 void queryAttenuationMax(SCPI_C commands, SCPI_P parameters, Stream& interface) {
     interface.println(MAX_ATTENUATION);  // Maximum attenuation in dB
+}
+
+// Network/WiFi Commands Implementation
+void SystemNetworkStatus(SCPI_C commands, SCPI_P parameters, Stream& interface) {
+    WiFiStatus status = getWiFiStatus();
+    switch (status) {
+        case WIFI_CONNECTED:
+            interface.println(F("CONNECTED"));
+            break;
+        case WIFI_CONNECTING:
+            interface.println(F("CONNECTING"));
+            break;
+        case WIFI_DISCONNECTED:
+            interface.println(F("DISCONNECTED"));
+            break;
+        case WIFI_AP_MODE:
+            interface.println(F("ACCESS_POINT"));
+            break;
+        case WIFI_ERROR:
+            interface.println(F("ERROR"));
+            break;
+        default:
+            interface.println(F("UNKNOWN"));
+            break;
+    }
+}
+
+void SystemNetworkIP(SCPI_C commands, SCPI_P parameters, Stream& interface) {
+    if (getWiFiStatus() == WIFI_CONNECTED && deviceIP.length() > 0) {
+        interface.println(deviceIP);
+    } else {
+        interface.println(F("0.0.0.0"));
+    }
+}
+
+void SystemNetworkSSID(SCPI_C commands, SCPI_P parameters, Stream& interface) {
+    if (getWiFiStatus() == WIFI_CONNECTED && deviceSSID.length() > 0) {
+        interface.println(deviceSSID);
+    } else {
+        interface.println(F("Not Connected"));
+    }
+}
+
+void SystemNetworkInfo(SCPI_C commands, SCPI_P parameters, Stream& interface) {
+    String info = getConnectionInfo();
+    info.replace("\n", ";");  // Replace newlines with semicolons for SCPI response
+    interface.println(info);
+}
+
+void SystemWiFiReset(SCPI_C commands, SCPI_P parameters, Stream& interface) {
+    operationComplete = false;
+    interface.println(F("WiFi settings will be reset. Device will restart."));
+    delay(100);  // Give time for response to be sent
+    resetWiFiSettings();
+    operationComplete = true;
+}
+
+void SystemWiFiConfigure(SCPI_C commands, SCPI_P parameters, Stream& interface) {
+    if (parameters.Size() >= 2) {
+        // Parameters provided: SSID and password
+        String ssid = String(parameters[0]);
+        String password = String(parameters[1]);
+        
+        if (ssid.length() > 0) {
+            operationComplete = false;
+            interface.println(F("Configuring WiFi..."));
+            
+            // Disconnect current WiFi
+            WiFi.disconnect();
+            delay(1000);
+            
+            // Try to connect with new credentials
+            WiFi.begin(ssid.c_str(), password.c_str());
+            
+            // Wait for connection (up to 30 seconds)
+            int attempts = 0;
+            while (WiFi.status() != WL_CONNECTED && attempts < 60) {
+                delay(500);
+                attempts++;
+            }
+            
+            if (WiFi.status() == WL_CONNECTED) {
+                deviceIP = WiFi.localIP().toString();
+                deviceSSID = WiFi.SSID();
+                currentWiFiStatus = WIFI_CONNECTED;
+                interface.println(F("WiFi configured successfully"));
+                interface.print(F("IP: "));
+                interface.println(deviceIP);
+            } else {
+                currentWiFiStatus = WIFI_DISCONNECTED;
+                interface.println(F("WiFi configuration failed"));
+                addError(-350, "Queue overflow;WiFi connection failed");
+            }
+            operationComplete = true;
+        } else {
+            addError(-109, "Missing parameter;SSID cannot be empty");
+            interface.println(F("-109,\"Missing parameter;SSID cannot be empty\""));
+        }
+    } else {
+        // No parameters - start configuration portal
+        operationComplete = false;
+        interface.println(F("Starting WiFi configuration portal..."));
+        interface.print(F("Connect to AP: "));
+        interface.println(F(WIFI_MANAGER_AP_NAME));
+        interface.print(F("Password: "));
+        interface.println(F(WIFI_MANAGER_AP_PASS));
+        interface.println(F("Navigate to 192.168.4.1 to configure"));
+        
+        // Reset WiFi settings to force configuration portal
+        resetWiFiSettings();
+        operationComplete = true;
+    }
 }

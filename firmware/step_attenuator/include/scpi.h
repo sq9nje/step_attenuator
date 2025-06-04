@@ -46,5 +46,14 @@ void decrementAttenuation(SCPI_C commands, SCPI_P parameters, Stream& interface)
 void queryAttenuationMin(SCPI_C commands, SCPI_P parameters, Stream& interface);
 void queryAttenuationMax(SCPI_C commands, SCPI_P parameters, Stream& interface);
 
+// Network/WiFi Commands
+void SystemNetworkStatus(SCPI_C commands, SCPI_P parameters, Stream& interface);
+void SystemNetworkIP(SCPI_C commands, SCPI_P parameters, Stream& interface);
+void SystemNetworkSSID(SCPI_C commands, SCPI_P parameters, Stream& interface);
+void SystemNetworkInfo(SCPI_C commands, SCPI_P parameters, Stream& interface);
+void SystemWiFiReset(SCPI_C commands, SCPI_P parameters, Stream& interface);
+void SystemWiFiConfigure(SCPI_C commands, SCPI_P parameters, Stream& interface);
+
+void myErrorHandler(SCPI_C commands, SCPI_P parameters, Stream& interface);
 
 #endif // _SCPI_H_
